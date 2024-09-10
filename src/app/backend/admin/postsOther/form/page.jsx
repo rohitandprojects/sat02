@@ -1,0 +1,209 @@
+"use client";
+
+import { useEffect } from "react";
+//import { useCategoryForm } from "./contexts/PostsFormContext";
+import { useSearchParams } from "next/navigation";
+import { usePostsForm } from "./contexts/PostsFormContext";
+import { useCategoriesOther } from "@/app/lib/firebase/categoryOther/read";
+import { useAuthors } from "@/app/lib/firebase/author/read";
+import { spaceToHyphen } from "@/utils/transformName";
+import { RTEField } from "./components/RTEField";
+import { RTEField2 } from "./components/RTEField2";
+import { RTEField3 } from "./components/RTEField3";
+import { RTEField4 } from "./components/RTEField4";
+import Link from "next/link";
+
+export default function Page(){
+    const searchParams = useSearchParams();
+    const updatePostsId = searchParams.get('id');
+    const {
+        data,
+        isLoading,
+        error,
+        isDone,
+        handleData,
+        handleSKU,
+        handleCreate,
+        handleUpdate,
+        handleDelete,
+        image, setImage,
+        fetchData
+    } = usePostsForm();
+
+    useEffect(() => {
+        if(updatePostsId){
+            fetchData(updatePostsId)
+        }
+    }, [updatePostsId]);
+
+    return <main className="w-100">
+        <div className="d-flex w-100 justify-content-between add-categories align-items-center mb-3">
+            <h3 className="category-form-title align-items-center">
+                {updatePostsId && <span className="update-text">Update/Delete</span>}
+                {!updatePostsId && <span className="creater-text">Upload</span>}
+                <div>Other Posts </div>
+            </h3>
+            <Link href={'/backend/admin/postsOther'}>
+                <button className="btn position-relative">Back</button>
+            </Link>
+        </div>
+        <div className="category-form-sample">
+            <div className="category-form">
+                <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            if(updatePostsId){
+                                handleUpdate();
+                            } else {
+                                handleCreate();
+                            }
+                        }}
+                    >
+                    <div className="form-group">
+                        <label className="form-label"><strong>Product Name</strong> <span>*</span></label>
+                        <input type="text" className="form-control" placeholder="Product Name"
+                        onChange={(e) => {
+                            handleData('name', e.target.value)
+                        }}
+                        value={data?.name}
+                        required />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label"><strong>Product Path (Same as Product name)</strong> <span>*</span></label>
+                        <input type="text" className="form-control" placeholder="Product Slug"
+                        disabled={updatePostsId}
+                        onChange={(e) => {
+                            handleData('slug', spaceToHyphen(e.target.value))
+                        }}
+                        value={data?.slug}
+                        required />
+                    </div>
+                    <SelectCateoryField></SelectCateoryField>
+                    {/* <SelectAuthorField></SelectAuthorField> */}
+                    {/* <div className="form-group">
+                        <label>Product Category</label>
+                        <select className="form-control"                 
+                            onChange={(e) => {
+                                handleData('ProductCategory', e.target.value)
+                            }}
+                            value={data?.ProductCategory}
+                            required >
+
+                            <option>Select Category</option>
+                            <option value="Chili Powder">Chili Powder</option>
+                            <option value="Turmeric Powder">Turmeric Powder</option>
+                            <option value="Dhaniya Jeera powder">Dhaniya Jeera powder</option>
+                            <option value="Dhaniya Powder">Dhaniya Powder</option>
+                            <option value="Jeera Powder">Jeera Powder</option>
+                        </select>
+                    </div> */}
+                    <div className="form-group">
+                        <label className="form-label"><strong>Product Image</strong> <span>*</span></label>
+                        <div className="product-image-wrap">
+                            <div className="product-image">
+                                {data?.productURL && <div className="icon-img"><img src={data?.productURL} className="cat-img" alt="" /></div>}
+                                {image && <div className="icon-new-img"><img src={URL.createObjectURL(image)} className="cat-img" alt="" /></div>}                        
+                            </div>
+                            <div className="product-control">
+                                {/* <label className="form-label">Product Image</label> */}
+                                <input type="file" accept="image/*" className="form-control" placeholder="Product Image"
+                                onChange={(e) => {
+                                    setImage(e.target.files[0]); 
+                                }}
+                                 />
+                            </div>
+                        </div>
+                    </div>
+                     
+                        
+
+                    <div className="form-group">
+                        <label className="form-label"><strong>Buy Now Link</strong><span>*</span></label>
+                        <input type="text" className="form-control" placeholder="Buy Now Link"
+                        onChange={(e) => {
+                            handleData('buyNow', e.target.value)
+                        }}
+                        value={data?.buyNow}
+                         />
+                    </div>
+                     
+                    { error && <p className="error">{error}</p> }
+                    <div className="d-flex two-by-two">
+                    {!isDone &&
+                        <button 
+                            type="submit" 
+                            disabled={isLoading || isDone}
+                            className="btn d-block">
+                            {isLoading ? "Loading..." : data?.productURL ? "Update" : "Create"}
+                        </button>
+                    }             
+                    { updatePostsId && !isDone &&
+                        <button 
+                            onClick={(e) =>{
+                                e.preventDefault();
+                                // TODO delete
+                                handleDelete(updatePostsId);
+                            }}
+                            disabled={isLoading || isDone}
+                            className="btn d-block">
+                            {isLoading ? "Loading..." : "Delete"}
+                        </button>
+                    }
+                    </div>
+                    {isDone && <p className="isDone">Successfully {updatePostsId ? "Update" : "Created"} !</p>}
+                </form>
+            </div>
+            <div className="category-sample">
+                <img src="/detail-Other-admin.webp" className="w-100" alt="detail"/>
+            </div>
+        </div>
+    </main>
+}
+
+function SelectCateoryField(){
+    const {
+        data,
+        handleData,
+    } = usePostsForm();
+    const { data: categories} = useCategoriesOther();
+    return <div className="form-group">
+        <label className="form-label"><strong>Product Category</strong><span>*</span></label>
+        <select className="form-control" name="categoryId" id="categoryId" required
+        value={data?.categoryId}
+        onChange={(e) =>{
+            handleData('categoryId', e.target.value);
+        }}
+        >
+            <option value="">Select Category</option>
+            {categories && categories?.map((item, key) => {
+                return <option value={spaceToHyphen(item?.name)} key={key}>{item?.name}</option>
+            })}
+
+        </select>
+    </div>
+    
+} 
+
+function SelectAuthorField(){
+    const {
+        data,
+        handleData,
+    } = usePostsForm();
+    const { data: authors} = useAuthors();
+    return <div className="form-group">
+        <label className="form-label">Author Category<span>*</span></label>
+        <select className="form-control" name="authorsId" id="authorsId" required
+        value={data?.authorsId}
+        onChange={(e) =>{
+            handleData('authorsId', e.target.value)
+        }}
+        >
+            <option value="">Select Author</option>
+            {authors && authors?.map((item, key) => {
+                return <option value={item?.id} key={key}>{item?.name}</option>
+            })}
+
+        </select>
+    </div>
+    
+} 
