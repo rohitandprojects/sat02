@@ -77,9 +77,10 @@ export default function Page(){
                         <input type="text" className="form-control" placeholder="Product Slug"
                         disabled={updatePostsId}
                         onChange={(e) => {
-                            handleData('slug', spaceToHyphen(e.target.value))
+                            let slugName = (e.target.value).toLowerCase();
+                             handleData('slug', spaceToHyphen(slugName));
                         }}
-                        value={data?.slug}
+                        value={data?.id}
                         required />
                     </div>
                     <SelectCateoryField></SelectCateoryField>

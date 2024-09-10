@@ -69,9 +69,10 @@ export default function Page(){
                         <input type="text" className="form-control" placeholder="Product Slug"
                         disabled={updatePostsId}
                         onChange={(e) => {
-                            handleData('slug', spaceToHyphen(e.target.value))
+                            let slugName = (e.target.value).toLowerCase();
+                             handleData('slug', spaceToHyphen(slugName));
                         }}
-                        value={data?.slug}
+                        value={data?.id}
                         required />
                     </div>
                     <SelectCateoryField></SelectCateoryField>
@@ -156,7 +157,7 @@ function SelectCateoryField(){
         >
             <option value="">Select Category</option>
             {categories && categories?.map((item, key) => {
-                return <option value={spaceToHyphen(item?.name)} key={key}>{item?.name}</option>
+                return <option value={spaceToHyphen(item?.id)} key={key}>{item?.name}</option>
             })}
 
         </select>

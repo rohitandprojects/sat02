@@ -63,7 +63,8 @@ export default function Page(){
                 <label className="form-label"><strong>Category Slug</strong> <span>*</span></label>
                 <input type="text" className="form-control" disabled={updateCategoryId} placeholder="Category Slug"
                 onChange={(e) => {
-                    handleData('slug', spaceToHyphen(e.target.value))
+                    let slugName = (e.target.value).toLowerCase();
+                    handleData('slug', spaceToHyphen(slugName));
                 }}
                 value={data?.id}
                  required />

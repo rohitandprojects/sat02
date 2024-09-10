@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCategoryForm } from "./contexts/CategoryFormContext";
 import { useSearchParams } from "next/navigation";
 import { spaceToHyphen } from "@/utils/transformName";
@@ -60,10 +60,11 @@ export default function Page(){
                 {/* <div className="form-text">We'll never share your email with anyone else.</div> */}
             </div>
             <div className="form-group">
-                <label className="form-label"><strong>Category Slug </strong><span>*</span></label>
+                <label className="form-label"><strong>Category Slug</strong> <span>*</span></label>
                 <input type="text" className="form-control" disabled={updateCategoryId} placeholder="Category Slug"
                 onChange={(e) => {
-                    handleData('slug', spaceToHyphen(e.target.value))
+                    let slugName = (e.target.value).toLowerCase();
+                    handleData('slug', spaceToHyphen(slugName));
                 }}
                 value={data?.id}
                  required />
