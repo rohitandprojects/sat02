@@ -11,6 +11,7 @@ const fetchCountryData = async () => {
 }
 
 export default function Sidebar(params) {
+  const [date, setDate] = useState("");
   const initialized = useRef(false);
   const hyphenToSpace = (str) => str.replace(/-/g, ' ');
   const [countries, setCountries] = useState([]);
@@ -71,6 +72,7 @@ export default function Sidebar(params) {
             try{
               const data = await fetchCountryData();
               setCountries(data);
+              
               const pathname = location.pathname;
               const pathSegments = pathname.split('/').filter(segment => segment !== '');
               const lastPathSegment = pathSegments[pathSegments.length - 1];
@@ -338,7 +340,7 @@ export default function Sidebar(params) {
             <ul className="position-relative">              
               {countries?.map((category, index) =>{
                   return (                    
-                    <li key={index} data-category={category?.id} onClick={(e) => handleCategoryClick(category.id, e, category?.name)} className={activeCategory === category?.id ? 'active' : ''}><Link href={'#'}><img src={category?.iconURL} width="30" height="30" alt={category?.name}/><span>{hyphenToSpace(category?.name)}</span></Link></li>                    
+                    <li key={index} data-category={category?.id} onClick={(e) => handleCategoryClick(category.id, e, category?.name)} className={activeCategory === category?.id ? 'active' : ''}><Link href={'#'}><img src={category?.iconURL} width="30" height="30" alt={category?.name}/><span>{hyphenToSpace(category?.name)}</span></Link></li>
                   )
                 }
               )}
