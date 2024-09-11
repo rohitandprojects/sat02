@@ -23,6 +23,7 @@ export default function CategoriesInterListView(){
                 <th>Icon</th>
                 <th>Name</th>
                 <th>Slug</th>
+                <th>Date</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -34,6 +35,7 @@ export default function CategoriesInterListView(){
                     <th><div className="product-imgs"><img src={item?.iconURL} width="300" height="300" alt={item?.name}/></div></th>
                     <th>{item?.name}</th>
                     <th>{item?.slug}</th>
+                    <th>{item?.timestamp.toDate().toString()}</th>
                     <th><Link href={`/backend/admin/categoriesInter/form?id=${item?.id}`} className="btn">Edit</Link></th>
                 </tr>
             })

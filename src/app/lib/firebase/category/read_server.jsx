@@ -6,7 +6,7 @@ export const getCategoryFirst = async (id) => {
 }
 
 export const getCategory = async (id) => {
-    return await getDoc(doc(db, `categories/${id}`), orderBy('timestamp', 'asc')).then((snap) => snap.data());
+    return await getDoc(doc(db, `categories/${id}`)).then((snap) => snap.data());
 }
 
 // export const getAllCategories = async () => {

@@ -339,8 +339,10 @@ export default function Sidebar(params) {
           <div id="scroll" className="content-scroll">
             <ul className="position-relative">              
               {countries?.map((category, index) =>{
+                //console.log(category?.timestamp.toDate().toString()+' :'+category?.name);
                   return (                    
                     <li key={index} data-category={category?.id} onClick={(e) => handleCategoryClick(category.id, e, category?.name)} className={activeCategory === category?.id ? 'active' : ''}><Link href={'#'}><img src={category?.iconURL} width="30" height="30" alt={category?.name}/><span>{hyphenToSpace(category?.name)}</span></Link></li>
+                    
                   )
                 }
               )}
